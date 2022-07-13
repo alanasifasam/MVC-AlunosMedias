@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!--Import Google Icon Font-->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <!--Import materialize.css-->
+  <link type="text/css" rel="stylesheet" href="css/materialize.min.css" media="screen,projection" />
+
+  <!--Let browser know website is optimized for mobile-->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <style type="text/css">
+    h1 {
+      margin-top: 0;
+      margin-bottom: 0;
+    }
+
+    .underlined {
+      border-bottom: 3px solid currentColor;
+    }
+
+    .reproved {
+      background-color: red;
+    }
+
+    .aproved {
+      background-color: green;
+    }
+
+    .form-add {
+      background: #e3ecec;
+      padding-top: 0.75em;
+    }
+
+    .main-title {
+      margin-bottom: 0;
+    }
+
+    .input-field p {
+      margin: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <div class="hero center card-panel materialize-red darken-4 white-text z-depth-3">
+      <h1 class="materialize-red-text text-lighten-3">
+        Média de Alunos 
+      </h1>
+    </div>
+
+    <h2 class="materialize-red-text text-lighten-2 underlined main-title">
+      Detalhe do Aluno
+    </h2>
+
+    <form class="form-add" data-edit-aluno-form>
+      <div class="row">
+        <div class="input-field col s12">
+          <input placeholder="Digite o nome do aluno" id="first_name" type="text" class="validate" />
+          <label for="first_name" class="active">Nome do Aluno</label>
+        </div>
+        <div class="input-field col s12">
+          <p>Notas por matéria</p>
+        </div>
+      </div>
+
+      <div data-edit-notas>
+      </div>
+      <!--/data-edit-notas-->
+
+
+      <div class="row">
+        <div class="input-field col s12">
+          <a class="btn" href="index.html">Cancelar</a>
+          <button class="btn" type="submit" name="action">
+            Salvar
+          </button>
+        </div>
+      </div>
+
+
+    </form>
+
+  </div>
+
+  <!--JavaScript at end of body for optimized loading-->
+  <!-- <script type="text/javascript" src="js/materialize.min.js"></script> -->
+  <script src="js/calc.js"></script>
+  <script src="js/Models/Aluno.model.js"></script>
+  <script src="js/Services/Alunos.service.js"></script>
+  <script src="js/Services/Materias.service.js"></script>
+  <script src="js/Views/EditAluno.view.js"></script>
+  <script src="js/Controllers/EditAluno.controller.js">
+
+  </script>
+
+  <!-- <script src="js/app.js"></script> -->
+
+  <script>
+
+    const alunosService = new AlunosService()
+
+    //obter id pela url
+    const paramsString = window.location.search;
+    console.log(paramsString);
+    const URLparams = new URLSearchParams(paramsString);
+    const id = parseInt(URLparams.get("id"));
+
+    const aluno = (alunosService.searchById(id))
+
+    document.getElementById('first_name').value = aluno.nome
+
+    const editAlunoView = new EditAlunoView(document.querySelector('[data-edit-aluno-form]'),
+      new MateriasService().materias)
+
+    const editAlunoController = new EditAlunoController(aluno, editAlunoView, alunosService)
+
+    document.querySelector('form').addEventListener('submit', function (e) {
+      e.preventDefault()
+      const nome = document.querySelector('#first_name').value
+
+
+      editAlunoController.edit(aluno, nome)
+      window.location.assign("index.html")
+
+    })
+
+  </script>
+</body>
+
+</html>
